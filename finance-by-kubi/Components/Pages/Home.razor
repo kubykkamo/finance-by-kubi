@@ -2,7 +2,7 @@
 @* Tohle říká stránce, kde najde tvoje třídy *@
 @using finance_by_kubi.Models
 @using finance_by_kubi.Services
-@inject IToastService toastService
+
 <PageTitle>Přehled - Finance by </PageTitle>
 
 <h2>Můj přehled</h2>
@@ -101,6 +101,18 @@ else
             </div>
         </div>
     }
+    @if (showToast)
+    {
+                    <div class="toast show position-fixed top-0 end-0 m-3 text-bg-success border-0 shadow" style="z-index: 1055;">
+                        <div class="d-flex">
+                            <div class="toast-body fs-6">
+                                <span class="bi bi-check-circle me-2"></span> @toastMessage
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" @onclick="CloseToast"></button>
+                        </div>
+                    </div>
+        
+    }
 }
 
 @code {
@@ -116,18 +128,30 @@ else
     private bool addingTransaction = false;
     private string selectedCategory = "";
 
+    private string toastMessage = "";
+    private bool showToast = false;
+
+
     private void VerifyTransaction()
     {
-        toastService.ShowInfo("Tlačítko Uložit skutečně funguje!");
-        Category category = _account.Categories
-            .FirstOrDefault(c => c.Name == selectedCategory);
+        Category category;
+        try {
+            category = _account.Categories
+                .FirstOrDefault(c => c.Name == selectedCategory);
+        }
+
+        catch (ArgumentException)
+        {
+            return;   
+        }
         if (category != null)
         {   
             var t = new Transaction(NewDescription, NewAmount, IsIncome, category);
             _account.Transactions.Add(t);
             _storage.SaveTransactions(_account.Transactions);
+            ShowSuccessToast("Platba byla úspešně uložena.");
             CloseNewTransaction();
-            toastService.ShowSuccess("Platba byla úspěšně uložena");
+
         }
     }
     private void NewTransaction()
@@ -140,6 +164,24 @@ else
         addingTransaction = false;    
     }
 
+    private void CloseToast()
+    {
+        showToast = false;
+    }
+
+    private async Task ShowSuccessToast(string message)
+    {
+        toastMessage = message;
+        showToast = true;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        showToast = false;
+        StateHasChanged();
+
+
+    }
 
     // Tato metoda se spustí sama hned při načtení stránky
     protected override void OnInitialized()
