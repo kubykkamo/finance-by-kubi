@@ -1,7 +1,7 @@
 using finance_by_kubi.Components;
-
+using Blazored.Toast;
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddBlazoredToast();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -19,7 +19,7 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
-
+app.UseStaticFiles();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

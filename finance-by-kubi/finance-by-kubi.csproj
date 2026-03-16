@@ -13,4 +13,8 @@
     <Folder Include="Components\Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ANM.Blazored.Toast" Version="0.1.1" />
+  </ItemGroup>
+
 </Project>

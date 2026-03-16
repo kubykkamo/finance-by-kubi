@@ -2,7 +2,7 @@
 @* Tohle říká stránce, kde najde tvoje třídy *@
 @using finance_by_kubi.Models
 @using finance_by_kubi.Services
-
+@inject IToastService toastService
 <PageTitle>Přehled - Finance by </PageTitle>
 
 <h2>Můj přehled</h2>
@@ -118,13 +118,16 @@ else
 
     private void VerifyTransaction()
     {
+        toastService.ShowInfo("Tlačítko Uložit skutečně funguje!");
         Category category = _account.Categories
             .FirstOrDefault(c => c.Name == selectedCategory);
         if (category != null)
-        {
+        {   
             var t = new Transaction(NewDescription, NewAmount, IsIncome, category);
             _account.Transactions.Add(t);
             _storage.SaveTransactions(_account.Transactions);
+            CloseNewTransaction();
+            toastService.ShowSuccess("Platba byla úspěšně uložena");
         }
     }
     private void NewTransaction()
