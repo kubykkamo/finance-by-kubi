@@ -103,15 +103,14 @@ else
     }
     @if (showToast)
     {
-                    <div class="toast show position-fixed top-0 end-0 m-3 text-bg-success border-0 shadow" style="z-index: 1055;">
-                        <div class="d-flex">
-                            <div class="toast-body fs-6">
-                                <span class="bi bi-check-circle me-2"></span> @toastMessage
-                            </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" @onclick="CloseToast"></button>
-                        </div>
-                    </div>
-        
+        <div class="toast show position-fixed top-0 end-0 m-3 @(isSuccess ? "text-bg-success" : "text-bg-danger")  border-0 shadow" style="z-index: 1055;">
+            <div class="d-flex">
+                <div class="toast-body fs-6">
+                    <span class="bi bi-check-circle me-2"></span> @toastMessage
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" @onclick="CloseToast"></button>
+            </div>
+        </div>
     }
 }
 
@@ -127,31 +126,41 @@ else
     private bool IsIncome = false;
     private bool addingTransaction = false;
     private string selectedCategory = "";
+    private bool isSuccess = false;
 
     private string toastMessage = "";
     private bool showToast = false;
 
 
-    private void VerifyTransaction()
+    private async Task VerifyTransaction()
     {
-        Category category;
-        try {
-            category = _account.Categories
-                .FirstOrDefault(c => c.Name == selectedCategory);
-        }
 
-        catch (ArgumentException)
+
+        Category category = _account.Categories
+            .FirstOrDefault(c => c.Name == selectedCategory);
+
+        if (category == null)
         {
-            return;   
+            await ShowToast("Neplatná kategorie!", false);
+            return;
         }
-        if (category != null)
-        {   
-            var t = new Transaction(NewDescription, NewAmount, IsIncome, category);
-            _account.Transactions.Add(t);
-            _storage.SaveTransactions(_account.Transactions);
-            ShowSuccessToast("Platba byla úspešně uložena.");
-            CloseNewTransaction();
 
+
+        if (category != null)
+        {
+            try
+            {
+                var t = new Transaction(NewDescription, NewAmount, IsIncome, category);
+                _account.Transactions.Add(t);
+                _storage.SaveTransactions(_account.Transactions);
+                await ShowToast("Platba byla úspešně uložena.", true);
+                CloseNewTransaction();
+            }
+
+            catch (ArgumentException ex)
+            {
+                await ShowToast(ex.Message, false);
+            }
         }
     }
     private void NewTransaction()
@@ -169,8 +178,9 @@ else
         showToast = false;
     }
 
-    private async Task ShowSuccessToast(string message)
+    private async Task ShowToast(string message, bool isSuccess)
     {
+        
         toastMessage = message;
         showToast = true;
         StateHasChanged();

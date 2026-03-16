@@ -33,15 +33,17 @@ public class Transaction
 
     public Transaction(string description, decimal amount, bool isIncome, Category category)
     {
-        if (amount <= 0)
-        {
-            throw new ArgumentException("Částka musí být větší než nula.");
-        }
-
         if (string.IsNullOrWhiteSpace(description))
         {
             throw new ArgumentException("Popis nesmí být prázdný.");
         }
+
+        if (amount <= 0)
+        {
+            throw new ArgumentException("Zadej platnou částku.");
+        }
+
+        
 
         Description = description;
         Amount = amount;
