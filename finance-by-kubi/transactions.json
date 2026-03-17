@@ -1,8 +1,8 @@
 [
   {
-    "Description": "Vedlej\u0161\u00ED p\u0159\u00EDjem",
-    "Amount": 5000,
-    "Date": "2026-03-17T12:00:00+01:00",
+    "Description": "Test",
+    "Amount": 55,
+    "Date": "2026-03-16T00:00:00",
     "IsIncome": true,
     "CategoryName": "Doprava"
   },
