@@ -10,6 +10,9 @@
 <button class="btn btn-primary mb-3" @onclick="NewTransaction">
     <span class="bi bi-plus-lg me-2"></span> Nová platba
 </button>
+<button class="btn btn-primary mb-3" @onclick="OpenNewCategory">
+    <span class="bi bi-plus-lg me-2"></span> Přidat kategorii
+</button>
 
 
 
@@ -112,6 +115,27 @@ else
             </div>
         </div>
     }
+
+    @inject IJSRuntime JSRuntime
+
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="categoryModalLabel">Nová kategorie</h1>
+                    <button type="button" class="btn-close" @onclick="CloseNewCategory" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseNewCategory">Zavřít</button>
+                    <button type="button" class="btn btn-primary" @onclick="VerifyCategory">Přidat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 }
 
 @code {
@@ -128,13 +152,20 @@ else
     private bool IsIncome = false;
     private bool addingTransaction = false;
     private string selectedCategory = "";
-    //
+    // CATEGORY
+    private string NewCategoryName = "";
+
+    private bool addingCategory = false;
     // TOAST
     private bool isSuccess;
     private string toastMessage = "";
     private bool showToast = false;
     //
 
+    private async Task VerifyCategory()
+    {
+            
+    }
     private async Task VerifyTransaction()
     {
 
@@ -169,6 +200,17 @@ else
     private void NewTransaction()
     {
         addingTransaction = true;   
+    }
+
+    private async Task OpenNewCategory()
+    {
+        await JSRuntime.InvokeVoidAsync("showBootstrapModal", "categoryModal");
+    }
+
+    // Metoda pro zavření
+    private async Task CloseNewCategory()
+    {
+        await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "categoryModal");
     }
 
     private void SortTable(string HeaderName)
