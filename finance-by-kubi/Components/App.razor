@@ -38,6 +38,21 @@
         }
         };
     </script>
+    <script>
+        window.showBootstrapModal = (id) => {
+        const modalElement = document.getElementById(id);
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modal.show();
+        };
+
+        window.hideBootstrapModal = (id) => {
+        const modalElement = document.getElementById(id);
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) {
+        modal.hide();
+        }
+        };
+    </script>
 </body>
 
 </html>

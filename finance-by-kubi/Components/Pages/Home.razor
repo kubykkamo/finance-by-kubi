@@ -57,10 +57,11 @@ else
             }
         </tbody>
     </table>
-       
-    @if (addingTransaction)
-    {
-        <div class="modal d-block slide-in-left tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    
+    
+    @inject IJSRuntime JSRuntime
+    
+        <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -77,22 +78,33 @@ else
                                 <label for="InputAmount" class="form-label">Částka</label>
                                 <input type="number" id ="InputAmount" class="form-control" @bind="NewAmount">
                                 <div id="amountHelp" class="form-text">Zadej pouze částku bez měny.</div>
-                            </div>  
-                            <select class="form-select mb-3" aria-label="Default select example" @bind="selectedCategory" >
-                                <option selected>--- Vybrat kategorii ---</option>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categories" class="mb-2"> Kategorie </label>
+                                <select name="categories"class="form-select mb-3" aria-label="Default select example" @bind="selectedCategory" > 
+                            
                                 
+                              
                                 @foreach (var c in _account.Categories)
                                 {
                                     <option>@c.Name</option>
                                 }
                                 
                             </select>
-                            
+                            </div>
+                            <div class="mb-3">
+                                <label for="InputDate" class="form-label"> Datum </label>
+                                <input type="date" class="form-control" id="InputDate" @bind="NewDate">
+                                    <div id="dateHelp" class="form-text"> Pokud nezvolíš jiné datum, použije se dnešní. </div>
+                            </div>
+                           
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1" @bind="IsIncome">
                                 <label class="form-check-label" for="exampleCheck1">Je to příjem?</label>
                                 <div id="incomeHelp" class="form-text">Zaškrtni, pokud se jedná o příjem.</div>
                             </div>
+                            
+
                         </form>
      
                     </div>
@@ -103,7 +115,7 @@ else
                 </div>
             </div>
         </div>
-    }
+    
     @if (showToast)
     {
         <div class="toast show slide-in-right position-fixed top-0 end-0 m-3 @(isSuccess ? "text-bg-success" : "text-bg-danger")  border-0 shadow" style="z-index: 1055;">
@@ -126,11 +138,14 @@ else
                     <button type="button" class="btn-close" @onclick="CloseNewCategory" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <div class="mb-3">
+                        <label for="InputCategoryName" class="form-label">Název</label>
+                        <input type="text" class="form-control" id="InputCategoryName" @bind="NewCategoryName">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @onclick="CloseNewCategory">Zavřít</button>
-                    <button type="button" class="btn btn-primary" @onclick="VerifyCategory">Přidat</button>
+                    <button type="button" class="btn btn-success" @onclick="VerifyCategory">Přidat</button>
                 </div>
             </div>
         </div>
@@ -151,21 +166,21 @@ else
     private decimal NewAmount = 0;
     private bool IsIncome = false;
     private bool addingTransaction = false;
-    private string selectedCategory = "";
+    private string selectedCategory = "Vybrat kategorii";
+    private DateTime NewDate = DateTime.Today;
     // CATEGORY
     private string NewCategoryName = "";
 
     private bool addingCategory = false;
-    // TOAST
+    // TOAST    
     private bool isSuccess;
     private string toastMessage = "";
     private bool showToast = false;
     //
+    private bool _descending = false;
+    private string _lastHeader = "";
 
-    private async Task VerifyCategory()
-    {
-            
-    }
+
     private async Task VerifyTransaction()
     {
 
@@ -184,11 +199,14 @@ else
         {
             try
             {
-                var t = new Transaction(NewDescription, NewAmount, IsIncome, category);
+                var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate);
                 _account.Transactions.Add(t);
                 _storage.SaveTransactions(_account.Transactions);
-                await ShowToast("Platba byla úspešně uložena.", true);
+                SortTable("Datum");
+                await ClearAll();
                 CloseNewTransaction();
+                await ShowToast("Platba byla úspešně uložena.", true);
+                
             }
 
             catch (ArgumentException ex)
@@ -197,9 +215,14 @@ else
             }
         }
     }
-    private void NewTransaction()
+    private async Task NewTransaction()
     {
-        addingTransaction = true;   
+        
+        await JSRuntime.InvokeVoidAsync("showBootstrapModal", "transactionModal");
+    }
+    private async Task CloseNewTransaction()
+    {
+        await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "transactionModal");
     }
 
     private async Task OpenNewCategory()
@@ -213,41 +236,70 @@ else
         await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "categoryModal");
     }
 
-    private void SortTable(string HeaderName)
+    private async Task ClearAll()
     {
-        var transactions = _account.Transactions.ToList();
-
-        switch (HeaderName)
+        NewDescription = "";
+        NewAmount = 0;
+        NewCategoryName = "";
+        selectedCategory = "Vybrat kategorii";
+        IsIncome = false;
+    }
+    private async Task VerifyCategory()
+    {
+        try
         {
-            case("Datum"): transactions.OrderByDescending(t => t.Date)
-            .ToList();
+            var c = new Category(NewCategoryName);
+            _account.Categories.Add(c);
+            _storage.SaveCategories(_account.Categories);
+            
+            await ClearAll();
+            await CloseNewCategory();
+            await ShowToast("Kategorie úspěšně přidána!", true);
+            StateHasChanged();
 
-                break;
-            case("Popis"): transactions.OrderByDescending(t => t.Description)
-            .ToList();
-                break;
-            case ("Částka"):
-                _account.Transactions.Reverse();
-                
+        }
+        catch (ArgumentException ex)
+        {
+            await ShowToast(ex.Message, false);
+            
+        }
+    }
 
-                break;
-            default:
-                break;
+    private void SortTable(string headerName)
+    {
+        if (_lastHeader == headerName)
+        {
+            _descending = !_descending;
+        }
+        else
+        {
+            _descending = true;
+            _lastHeader = headerName;
         }
 
-        _account.Transactions.Reverse();
+        switch (headerName)
+        {
+            case "Datum":
+                _account.Transactions = _descending
+                    ? _account.Transactions.OrderByDescending(t => t.Date).ToList()
+                    : _account.Transactions.OrderBy(t => t.Date).ToList();
+                break;
 
-   
+            case "Popis":
+                _account.Transactions = _descending
+                    ? _account.Transactions.OrderByDescending(t => t.Description).ToList()
+                    : _account.Transactions.OrderBy(t => t.Description).ToList();
+                break;
 
-
-
-
+            case "Částka":
+                _account.Transactions = _descending
+                    ? _account.Transactions.OrderByDescending(t => t.Amount).ToList()
+                    : _account.Transactions.OrderBy(t => t.Amount).ToList();
+                break;
+        }
     }
+ 
 
-    private void CloseNewTransaction()
-    {
-        addingTransaction = false;    
-    }
 
     private void CloseToast()
     {

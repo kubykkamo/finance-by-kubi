@@ -54,6 +54,28 @@ public class Transaction
         Category = category;
     }
 
+    public Transaction(string description, decimal amount, bool isIncome, Category category, DateTime date)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new ArgumentException("Popis nesmí být prázdný.");
+        }
+
+        if (amount <= 0)
+        {
+            throw new ArgumentException("Zadej platnou částku.");
+        }
+
+
+
+        Description = description;
+        Amount = amount;
+        Date = date;
+        IsIncome = isIncome;
+
+        CategoryName = category.Name;
+        Category = category;
+    }
     public Transaction() { }
 
 }

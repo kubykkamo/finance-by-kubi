@@ -1,1 +1,8 @@
-[{"Name":"Potraviny"},{"Name":"Bydleni"},{"Name":"Doprava"},{"Name":"Zabava"},{"Name":"Vyplata"},{"Name":"Domacnost"},{"Name":"Nazev"},{"Name":"Nova kategorie"},{"Name":"Nova"},{"Name":"New"}]
+[
+  { "Name": "Potraviny" },
+  { "Name": "Bydleni" },
+  { "Name": "Doprava" },
+  { "Name": "Zabava" },
+  { "Name": "Vyplata" },
+  { "Name": "Domacnost" }
+]
