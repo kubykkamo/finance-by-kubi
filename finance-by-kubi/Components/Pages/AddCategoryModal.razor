@@ -1,0 +1,69 @@
+﻿@using finance_by_kubi.Models
+@using finance_by_kubi.Services
+@inject IJSRuntime JSRuntime
+
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="categoryModalLabel">Nová kategorie</h1>
+                <button type="button" class="btn-close" @onclick="CloseModal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="InputCategoryName" class="form-label">Název</label>
+                    <input type="text" class="form-control" id="InputCategoryName" @bind="NewCategoryName">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Zavřít</button>
+                    <button type="button" class="btn btn-success" @onclick="VerifyCategory">Přidat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@code {
+    // 1. Tímto přijímáme data (účet) z hlavní stránky
+    [Parameter]
+    public Account AccountData { get; set; }
+
+    // 2. Tímto dáváme hlavní stránce vědět, že je hotovo
+    [Parameter]
+    public EventCallback<string> OnCategoryAdded { get; set; }
+    [Parameter]
+    public EventCallback<string> OnCategoryFailed { get; set; }
+    private string NewCategoryName = "";
+    private FileStorageService _storage = new FileStorageService();
+
+    // Veřejná metoda, aby šel modal otevřít zvenku
+    public async Task OpenModal()
+    {
+        await JSRuntime.InvokeVoidAsync("showBootstrapModal", "categoryModal");
+    }
+
+    private async Task CloseModal()
+    {
+        await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "categoryModal");
+    }
+
+    private async Task VerifyCategory()
+    {
+        try
+        {
+            var c = new Category(NewCategoryName);
+            AccountData.Categories.Add(c);
+            _storage.SaveCategories(AccountData.Categories);
+
+            NewCategoryName = "";
+            await CloseModal();
+
+            // Zavoláme rodiče (Home.razor), aby ukázal toast a aktualizoval UI
+            await OnCategoryAdded.InvokeAsync("Kategorie úspěšně přidána!");
+        }
+        catch (ArgumentException ex)
+        {
+            await OnCategoryFailed.InvokeAsync(ex.Message);
+        }
+    }
+}

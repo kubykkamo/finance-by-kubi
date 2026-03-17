@@ -41,7 +41,7 @@ public class FileStorageService
             WriteIndented = true
         };
         // Kategorie jsou jen seznam textů, JSON si s tím poradí úplně stejně
-        string jsonString = JsonSerializer.Serialize(categories);
+        string jsonString = JsonSerializer.Serialize(categories, options);
         File.WriteAllText(_categoriesPath, jsonString);
     }
 

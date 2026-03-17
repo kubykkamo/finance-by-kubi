@@ -1,0 +1,123 @@
+﻿@using finance_by_kubi.Models
+@using finance_by_kubi.Services
+@inject IJSRuntime JSRuntime
+
+<div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Přidat novou platbu</h5>
+                <button type="button" class="btn-close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="InputDescription" class="form-label">Popis</label>
+                        <input type="text" class="form-control" id="InputDescription" @bind="NewDescription">
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputAmount" class="form-label">Částka</label>
+                            <input type="number" id="InputAmount" class="form-control" @bind="NewAmount">
+                                <div id="amountHelp" class="form-text">Zadej pouze částku bez měny.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categories" class="mb-2"> Kategorie </label>
+                                <select name="categories" class="form-select mb-3" aria-label="Default select example" @bind="selectedCategory">
+                            
+                                
+                              
+                                    @foreach (var c in AccountData.Categories)
+                                    {
+                                        <option>@c.Name</option>
+                                    }
+                                
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="InputDate" class="form-label"> Datum </label>
+                                <input type="date" class="form-control" id="InputDate" @bind="NewDate">
+                                    <div id="dateHelp" class="form-text"> Pokud nezvolíš jiné datum, použije se dnešní. </div>
+                                </div>
+                           
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" @bind="IsIncome">
+                                        <label class="form-check-label" for="exampleCheck1">Je to příjem?</label>
+                                        <div id="incomeHelp" class="form-text">Zaškrtni, pokud se jedná o příjem.</div>
+                                    </div>
+                            
+
+                                </form>
+     
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @onclick="CloseModal">Zrušit</button>
+                                <button type="button" class="btn btn-success" @onclick="VerifyTransaction">Uložit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+@code 
+{
+
+    [Parameter]
+    public Account AccountData { get; set; }
+    private FileStorageService _storage = new FileStorageService();
+    private string NewDescription = "";
+    private decimal NewAmount = 0;
+    private bool IsIncome = false;
+    private bool addingTransaction = false;
+    private string selectedCategory = "Vybrat kategorii";
+    private DateTime NewDate = DateTime.Today;
+    // 2. Tímto dáváme hlavní stránce vědět, že je hotovo
+    [Parameter]
+    public EventCallback<string> OnTransactionAdded { get; set; }
+    [Parameter]
+    public EventCallback<string> OnTransactionFailed { get; set; }
+
+
+    public async Task OpenModal()
+    {
+        await JSRuntime.InvokeVoidAsync("showBootstrapModal", "transactionModal");
+    }
+
+    private async Task CloseModal()
+    {
+        await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "transactionModal");
+    }
+
+    private async Task VerifyTransaction()
+    {
+
+
+        Category category = AccountData.Categories
+            .FirstOrDefault(c => c.Name == selectedCategory);
+
+        if (category == null)
+        {
+            await OnTransactionFailed.InvokeAsync("Nebyla vybrána žádná kategorie");
+            return;
+        }
+
+
+        if (category != null)
+        {
+            try
+            {
+                var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate);
+                AccountData.Transactions.Add(t);
+                _storage.SaveTransactions(AccountData.Transactions);
+
+                await CloseModal();
+                await OnTransactionAdded.InvokeAsync("Transakce byla úspěšně přidána!");
+
+            }
+
+            catch (ArgumentException ex)
+            {
+                await OnTransactionFailed.InvokeAsync(ex.Message);
+            }
+        }
+    }
+}

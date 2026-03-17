@@ -7,10 +7,10 @@
 
 <h2>Můj přehled</h2>
 
-<button class="btn btn-primary mb-3" @onclick="NewTransaction">
+<button class="btn btn-primary mb-3" @onclick="ShowTransactionModal">
     <span class="bi bi-plus-lg me-2"></span> Nová platba
 </button>
-<button class="btn btn-primary mb-3" @onclick="OpenNewCategory">
+<button class="btn btn-primary mb-3" @onclick="ShowCategoryModal">
     <span class="bi bi-plus-lg me-2"></span> Přidat kategorii
 </button>
 
@@ -61,60 +61,6 @@ else
     
     @inject IJSRuntime JSRuntime
     
-        <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Přidat novou platbu</h5>
-                        <button type="button" class="btn-close" @onclick="CloseNewTransaction"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="InputDescription" class="form-label">Popis</label>
-                                <input type="text" class="form-control" id="InputDescription" @bind="NewDescription">
-                            </div>
-                            <div class="mb-3">
-                                <label for="InputAmount" class="form-label">Částka</label>
-                                <input type="number" id ="InputAmount" class="form-control" @bind="NewAmount">
-                                <div id="amountHelp" class="form-text">Zadej pouze částku bez měny.</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="categories" class="mb-2"> Kategorie </label>
-                                <select name="categories"class="form-select mb-3" aria-label="Default select example" @bind="selectedCategory" > 
-                            
-                                
-                              
-                                @foreach (var c in _account.Categories)
-                                {
-                                    <option>@c.Name</option>
-                                }
-                                
-                            </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="InputDate" class="form-label"> Datum </label>
-                                <input type="date" class="form-control" id="InputDate" @bind="NewDate">
-                                    <div id="dateHelp" class="form-text"> Pokud nezvolíš jiné datum, použije se dnešní. </div>
-                            </div>
-                           
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1" @bind="IsIncome">
-                                <label class="form-check-label" for="exampleCheck1">Je to příjem?</label>
-                                <div id="incomeHelp" class="form-text">Zaškrtni, pokud se jedná o příjem.</div>
-                            </div>
-                            
-
-                        </form>
-     
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @onclick="CloseNewTransaction">Zrušit</button>
-                        <button type="button" class="btn btn-success" @onclick="VerifyTransaction">Uložit</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     
     @if (showToast)
     {
@@ -128,28 +74,17 @@ else
         </div>
     }
 
-    @inject IJSRuntime JSRuntime
+                    
+                    <AddCategoryModal @ref="categoryModal"
+                    AccountData="_account"
+                    OnCategoryAdded="HandleCategoryAdded"
+                    OnCategoryFailed ="HandleCategoryFailed"/>
 
-    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="categoryModalLabel">Nová kategorie</h1>
-                    <button type="button" class="btn-close" @onclick="CloseNewCategory" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="InputCategoryName" class="form-label">Název</label>
-                        <input type="text" class="form-control" id="InputCategoryName" @bind="NewCategoryName">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseNewCategory">Zavřít</button>
-                    <button type="button" class="btn btn-success" @onclick="VerifyCategory">Přidat</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <AddTransactionModal @ref="transactionModal"
+                        AccountData="_account"
+                        OnTransactionAdded="HandleTransactionAdded"
+                        OnTransactionFailed="HandleTransactionFailed"
+                        />
 
 }
 
@@ -161,17 +96,6 @@ else
     List<Transaction> tableTransactions;
     FileStorageService _storage = new FileStorageService();
 
-    // TRANSACTION
-    private string NewDescription = "";
-    private decimal NewAmount = 0;
-    private bool IsIncome = false;
-    private bool addingTransaction = false;
-    private string selectedCategory = "Vybrat kategorii";
-    private DateTime NewDate = DateTime.Today;
-    // CATEGORY
-    private string NewCategoryName = "";
-
-    private bool addingCategory = false;
     // TOAST    
     private bool isSuccess;
     private string toastMessage = "";
@@ -180,90 +104,43 @@ else
     private bool _descending = false;
     private string _lastHeader = "";
 
+    //Category modal
+    private AddCategoryModal categoryModal;
 
-    private async Task VerifyTransaction()
+    private async Task ShowCategoryModal()
     {
-
-
-        Category category = _account.Categories
-            .FirstOrDefault(c => c.Name == selectedCategory);
-
-        if (category == null)
-        {
-            await ShowToast("Neplatná kategorie!", false);
-            return;
-        }
-
-
-        if (category != null)
-        {
-            try
-            {
-                var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate);
-                _account.Transactions.Add(t);
-                _storage.SaveTransactions(_account.Transactions);
-                SortTable("Datum");
-                await ClearAll();
-                CloseNewTransaction();
-                await ShowToast("Platba byla úspešně uložena.", true);
-                
-            }
-
-            catch (ArgumentException ex)
-            {
-                await ShowToast(ex.Message, false);
-            }
-        }
+        await categoryModal.OpenModal();
     }
-    private async Task NewTransaction()
+    private async Task HandleCategoryAdded(string message)
     {
-        
-        await JSRuntime.InvokeVoidAsync("showBootstrapModal", "transactionModal");
+        await ShowToast(message, true);
+        StateHasChanged();
     }
-    private async Task CloseNewTransaction()
+    private async Task HandleCategoryFailed(string message)
     {
-        await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "transactionModal");
+        await ShowToast(message, false);
+        StateHasChanged();
     }
 
-    private async Task OpenNewCategory()
+    //Transaction modal
+    private AddTransactionModal transactionModal;
+
+    private async Task ShowTransactionModal()
     {
-        await JSRuntime.InvokeVoidAsync("showBootstrapModal", "categoryModal");
+        await transactionModal.OpenModal();
+    }
+    private async Task HandleTransactionAdded(string message)
+    {
+        await ShowToast(message, true);
+        StateHasChanged();
+    }
+    private async Task HandleTransactionFailed(string message)
+    {
+        await ShowToast(message, false);
+        StateHasChanged();
     }
 
-    // Metoda pro zavření
-    private async Task CloseNewCategory()
-    {
-        await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "categoryModal");
-    }
 
-    private async Task ClearAll()
-    {
-        NewDescription = "";
-        NewAmount = 0;
-        NewCategoryName = "";
-        selectedCategory = "Vybrat kategorii";
-        IsIncome = false;
-    }
-    private async Task VerifyCategory()
-    {
-        try
-        {
-            var c = new Category(NewCategoryName);
-            _account.Categories.Add(c);
-            _storage.SaveCategories(_account.Categories);
-            
-            await ClearAll();
-            await CloseNewCategory();
-            await ShowToast("Kategorie úspěšně přidána!", true);
-            StateHasChanged();
-
-        }
-        catch (ArgumentException ex)
-        {
-            await ShowToast(ex.Message, false);
-            
-        }
-    }
 
     private void SortTable(string headerName)
     {

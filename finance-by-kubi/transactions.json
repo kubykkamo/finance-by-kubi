@@ -28,6 +28,13 @@
     "CategoryName": "Potraviny"
   },
   {
+    "Description": "Benz\u00EDn",
+    "Amount": 1300,
+    "Date": "2026-03-17T00:00:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Doprava"
+  },
+  {
     "Description": "Men\u0161\u00ED n\u00E1kup",
     "Amount": 200,
     "Date": "2026-03-16T17:47:44+01:00",
@@ -105,10 +112,10 @@
     "CategoryName": "Vyplata"
   },
   {
-    "Description": "Benz\u00EDn",
-    "Amount": 1300,
+    "Description": "N\u00E1kup - Kaufland",
+    "Amount": 750,
     "Date": "2026-03-17T00:00:00+01:00",
     "IsIncome": false,
-    "CategoryName": "Doprava"
+    "CategoryName": "Potraviny"
   }
 ]
