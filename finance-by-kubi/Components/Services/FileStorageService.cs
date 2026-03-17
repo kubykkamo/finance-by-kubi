@@ -17,7 +17,12 @@ public class FileStorageService
     // --- Metody pro Transakce (už máš) ---
     public void SaveTransactions(List<Transaction> transactions)
     {
-        string jsonString = JsonSerializer.Serialize(transactions);
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        string jsonString = JsonSerializer.Serialize(transactions, options);
         File.WriteAllText(_transactionsPath, jsonString);
     }
 
@@ -31,6 +36,10 @@ public class FileStorageService
     // --- NOVÉ: Metody pro Kategorie ---
     public void SaveCategories(List<Category> categories)
     {
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
         // Kategorie jsou jen seznam textů, JSON si s tím poradí úplně stejně
         string jsonString = JsonSerializer.Serialize(categories);
         File.WriteAllText(_categoriesPath, jsonString);

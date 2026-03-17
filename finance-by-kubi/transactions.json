@@ -1,57 +1,43 @@
 [
   {
-    "Description": "Mesicni mzda",
-    "Amount": 45000,
-    "Date": "2026-03-02T09:15:00+01:00",
+    "Description": "Vedlej\u0161\u00ED p\u0159\u00EDjem",
+    "Amount": 5000,
+    "Date": "2026-03-17T12:00:00+01:00",
     "IsIncome": true,
     "CategoryName": "Vyplata"
   },
   {
-    "Description": "Benzina",
-    "Amount": 1500,
-    "Date": "2026-03-02T18:45:00+01:00",
+    "Description": "Dom\u00E1c\u00ED pot\u0159eby",
+    "Amount": 550,
+    "Date": "2026-03-17T11:11:41+01:00",
     "IsIncome": false,
-    "CategoryName": "Doprava"
+    "CategoryName": "Domacnost"
   },
   {
-    "Description": "Kino",
-    "Amount": 350,
-    "Date": "2026-03-03T20:00:00+01:00",
-    "IsIncome": false,
-    "CategoryName": "Zabava"
-  },
-  {
-    "Description": "Rohlik.cz",
-    "Amount": 950,
-    "Date": "2026-03-04T10:20:00+01:00",
-    "IsIncome": false,
-    "CategoryName": "Potraviny"
-  },
-  {
-    "Description": "Internet a TV",
-    "Amount": 600,
-    "Date": "2026-03-04T12:00:00+01:00",
+    "Description": "N\u00E1jem",
+    "Amount": 19000,
+    "Date": "2026-03-17T11:07:42+01:00",
     "IsIncome": false,
     "CategoryName": "Bydleni"
   },
   {
-    "Description": "Listky na vlak",
-    "Amount": 280,
-    "Date": "2026-03-05T07:45:00+01:00",
-    "IsIncome": false,
-    "CategoryName": "Doprava"
-  },
-  {
-    "Description": "Pekarna",
-    "Amount": 120,
-    "Date": "2026-03-05T14:10:00+01:00",
+    "Description": "Ve\u010De\u0159e v restauraci",
+    "Amount": 550,
+    "Date": "2026-03-17T10:06:01+01:00",
     "IsIncome": false,
     "CategoryName": "Potraviny"
   },
   {
-    "Description": "Restaurace obed",
-    "Amount": 250,
-    "Date": "2026-03-05T14:45:30+01:00",
+    "Description": "Men\u0161\u00ED n\u00E1kup",
+    "Amount": 200,
+    "Date": "2026-03-16T17:47:44+01:00",
+    "IsIncome": false,
+    "CategoryName": "Potraviny"
+  },
+  {
+    "Description": "Pivo",
+    "Amount": 40,
+    "Date": "2026-03-15T14:29:28+01:00",
     "IsIncome": false,
     "CategoryName": "Potraviny"
   },
@@ -63,45 +49,66 @@
     "CategoryName": "Zabava"
   },
   {
-    "Description": "Pivo",
-    "Amount": 40,
-    "Date": "2026-03-15T14:29:28+01:00",
+    "Description": "Restaurace obed",
+    "Amount": 250,
+    "Date": "2026-03-05T14:45:30+01:00",
     "IsIncome": false,
     "CategoryName": "Potraviny"
   },
   {
-    "Description": "Večeře v restauraci",
-    "Amount": 550,
-    "Date": "2026-03-17T10:06:01+01:00",
+    "Description": "Pekarna",
+    "Amount": 120,
+    "Date": "2026-03-05T14:10:00+01:00",
     "IsIncome": false,
     "CategoryName": "Potraviny"
   },
   {
-    "Description": "Nájem",
-    "Amount": 19000,
-    "Date": "2026-03-17T11:07:42+01:00",
+    "Description": "Listky na vlak",
+    "Amount": 280,
+    "Date": "2026-03-05T07:45:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Doprava"
+  },
+  {
+    "Description": "Internet a TV",
+    "Amount": 600,
+    "Date": "2026-03-04T12:00:00+01:00",
     "IsIncome": false,
     "CategoryName": "Bydleni"
   },
   {
-    "Description": "Domácí potřeby",
-    "Amount": 550,
-    "Date": "2026-03-17T11:11:41+01:00",
-    "IsIncome": false,
-    "CategoryName": "Domacnost"
-  },
-  {
-    "Description": "Menší nákup",
-    "Amount": 200,
-    "Date": "2026-03-16T17:47:44+01:00",
+    "Description": "Rohlik.cz",
+    "Amount": 950,
+    "Date": "2026-03-04T10:20:00+01:00",
     "IsIncome": false,
     "CategoryName": "Potraviny"
   },
   {
-    "Description": "Vedlejší příjem",
-    "Amount": 5000,
-    "Date": "2026-03-17T12:00:00+01:00",
+    "Description": "Kino",
+    "Amount": 350,
+    "Date": "2026-03-03T20:00:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Zabava"
+  },
+  {
+    "Description": "Benzina",
+    "Amount": 1500,
+    "Date": "2026-03-02T18:45:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Doprava"
+  },
+  {
+    "Description": "Mesicni mzda",
+    "Amount": 45000,
+    "Date": "2026-03-02T09:15:00+01:00",
     "IsIncome": true,
     "CategoryName": "Vyplata"
+  },
+  {
+    "Description": "Benz\u00EDn",
+    "Amount": 1300,
+    "Date": "2026-03-17T00:00:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Doprava"
   }
 ]
