@@ -39,7 +39,8 @@ else
                 <th @onclick='() => SortTable("Popis")'>Popis</th>
                 <th>Kategorie</th>
                 <th class="text-end" @onclick='() => SortTable("Částka")'>Částka</th>
-                <th style="width: 150px"></th>
+                <th style="width: 50px"></th>
+                <th style="width: 50px"></th>
             </tr>
         </thead>
         <tbody>
@@ -55,10 +56,17 @@ else
                         @(t.IsIncome ? "+" : "-") @t.Amount Kč
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-outline-primary btn-sm" @onclick="() => EditTransaction(t)">
+                        <button class="btn btn-outline-primary btn-sm" style="block-size: 30px" @onclick="() => EditTransaction(t)">
                             <i class="bi bi-pencil"></i>
                         </button>
                     </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-danger d-flex justify-content-center align-items-center" style="height: 30px; width: 30px">
+                            <i class="bi bi-trash" style="font-size: 20px;"></i>
+                        </button>
+                    </td>
+                        
+
                 </tr>
             }
         </tbody>
@@ -138,6 +146,7 @@ else
     private async Task HandleTransactionAdded(string message)
     {
         await ShowToast(message, true);
+        
         StateHasChanged();
     }
     private async Task HandleTransactionFailed(string message)

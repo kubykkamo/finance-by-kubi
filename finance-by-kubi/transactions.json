@@ -1,26 +1,5 @@
 [
   {
-    "Description": "Ve\u010De\u0159e v restauraci",
-    "Amount": 10000,
-    "Date": "2026-03-20T00:00:00",
-    "IsIncome": true,
-    "CategoryName": "Potraviny"
-  },
-  {
-    "Description": "Test",
-    "Amount": 22,
-    "Date": "2026-03-19T00:00:00",
-    "IsIncome": false,
-    "CategoryName": "Bydleni"
-  },
-  {
-    "Description": "Benz\u00EDn",
-    "Amount": 1300,
-    "Date": "2026-03-17T00:00:00+01:00",
-    "IsIncome": false,
-    "CategoryName": "Doprava"
-  },
-  {
     "Description": "N\u00E1kup - Kaufland",
     "Amount": 750,
     "Date": "2026-03-17T00:00:00+01:00",
@@ -117,12 +96,5 @@
     "Date": "2026-03-02T18:45:00+01:00",
     "IsIncome": false,
     "CategoryName": "Doprava"
-  },
-  {
-    "Description": "Mesicni mzda",
-    "Amount": 45000,
-    "Date": "2026-03-02T09:15:00+01:00",
-    "IsIncome": true,
-    "CategoryName": "Vyplata"
   }
 ]

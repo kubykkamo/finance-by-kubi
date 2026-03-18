@@ -162,7 +162,7 @@
 
                 var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate);
                 AccountData.Transactions.Add(t);
-                
+
                 await OnTransactionAdded.InvokeAsync("Transakce byla úspěšně přidána!");
 
 
