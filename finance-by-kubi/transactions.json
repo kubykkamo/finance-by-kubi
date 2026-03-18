@@ -1,31 +1,17 @@
 [
   {
+    "Description": "Ve\u010De\u0159e v restauraci",
+    "Amount": 10000,
+    "Date": "2026-03-20T00:00:00",
+    "IsIncome": true,
+    "CategoryName": "Potraviny"
+  },
+  {
     "Description": "Test",
-    "Amount": 55,
-    "Date": "2026-03-16T00:00:00",
-    "IsIncome": true,
-    "CategoryName": "Doprava"
-  },
-  {
-    "Description": "Dom\u00E1c\u00ED pot\u0159eby",
-    "Amount": 5500,
-    "Date": "2026-03-17T11:11:41+01:00",
-    "IsIncome": true,
-    "CategoryName": "Domacnost"
-  },
-  {
-    "Description": "N\u00E1jem",
-    "Amount": 19000,
-    "Date": "2026-03-17T11:07:42+01:00",
+    "Amount": 22,
+    "Date": "2026-03-19T00:00:00",
     "IsIncome": false,
     "CategoryName": "Bydleni"
-  },
-  {
-    "Description": "Ve\u010De\u0159e v restauraci",
-    "Amount": 550,
-    "Date": "2026-03-17T10:06:01+01:00",
-    "IsIncome": false,
-    "CategoryName": "Potraviny"
   },
   {
     "Description": "Benz\u00EDn",
@@ -47,6 +33,27 @@
     "Date": "2026-03-16T17:47:44+01:00",
     "IsIncome": false,
     "CategoryName": "Potraviny"
+  },
+  {
+    "Description": "Dom\u00E1c\u00ED pot\u0159eby",
+    "Amount": 5500,
+    "Date": "2026-03-16T00:00:00",
+    "IsIncome": true,
+    "CategoryName": "Domacnost"
+  },
+  {
+    "Description": "N\u00E1jem",
+    "Amount": 19000,
+    "Date": "2026-03-16T00:00:00",
+    "IsIncome": true,
+    "CategoryName": "Bydleni"
+  },
+  {
+    "Description": "Test",
+    "Amount": 55,
+    "Date": "2026-03-16T00:00:00",
+    "IsIncome": true,
+    "CategoryName": "Doprava"
   },
   {
     "Description": "Pivo",

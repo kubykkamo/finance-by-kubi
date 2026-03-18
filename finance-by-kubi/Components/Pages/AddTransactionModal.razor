@@ -2,11 +2,11 @@
 @using finance_by_kubi.Services
 @inject IJSRuntime JSRuntime
 
-<div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog">
+<div class="modal fade" id="transactionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Přidat novou platbu</h5>
+                <h5 class="modal-title">@(_editingTransaction == null ? "Přidat novou platbu"  : "Upravit platbu") </h5>
                 <button type="button" class="btn-close" @onclick="CloseModal"></button>
             </div>
             <div class="modal-body">
@@ -69,7 +69,9 @@
     private bool IsIncome = false;
     private bool addingTransaction = false;
     private string selectedCategory = "Vybrat kategorii";
+    private Category category;
     private DateTime NewDate = DateTime.Today;
+    private Transaction? _editingTransaction;
     // 2. Tímto dáváme hlavní stránce vědět, že je hotovo
     [Parameter]
     public EventCallback<string> OnTransactionAdded { get; set; }
@@ -79,45 +81,100 @@
 
     public async Task OpenModal()
     {
+        _editingTransaction = null;
         await JSRuntime.InvokeVoidAsync("showBootstrapModal", "transactionModal");
     }
 
     private async Task CloseModal()
     {
         await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "transactionModal");
+        ClearAll();
     }
 
-    private async Task VerifyTransaction()
+    private void ClearAll()
     {
+        NewDescription = "";
+        NewAmount = 0;
+        IsIncome = false;
+        selectedCategory = "Vybrat kategorii";
+        NewDate = DateTime.Today;
+    }
 
-
-        Category category = AccountData.Categories
-            .FirstOrDefault(c => c.Name == selectedCategory);
-
+    private async Task<bool> ValidateInput()
+    {
+        if (string.IsNullOrWhiteSpace(NewDescription))
+        {
+            await OnTransactionFailed.InvokeAsync("Popis nesmí být prázdný");
+            return false;
+        }
+        if (NewAmount <= 0)
+        {
+            await OnTransactionFailed.InvokeAsync("Částka musí být větší než nula!");
+            return false;
+        }
+        category = AccountData.Categories
+                        .FirstOrDefault(c => c.Name == selectedCategory);
         if (category == null)
         {
             await OnTransactionFailed.InvokeAsync("Nebyla vybrána žádná kategorie");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+    }
+
+    public async Task LoadTransaction(Transaction t)
+    {
+        _editingTransaction = t;
+        NewDescription = t.Description;
+        NewAmount = t.Amount;
+        IsIncome = t.IsIncome;
+        selectedCategory = t.CategoryName;
+        NewDate = t.Date;
+        await JSRuntime.InvokeVoidAsync("showBootstrapModal", "transactionModal");
+        StateHasChanged();
+    }
+    private async Task VerifyTransaction()
+    {
+        if (ValidateInput().IsCompleted)
+        {
+            if (_editingTransaction != null)
+            {
+                _editingTransaction.Description = NewDescription;
+                _editingTransaction.Amount = NewAmount;
+                _editingTransaction.IsIncome = IsIncome;
+                _editingTransaction.CategoryName = selectedCategory;
+                _editingTransaction.Date = NewDate;
+
+
+                _editingTransaction = null;
+                await CloseModal();
+                await OnTransactionAdded.InvokeAsync("Změny uloženy");
+
+            }
+
+            else
+            {
+
+
+                var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate);
+                AccountData.Transactions.Add(t);
+                
+                await OnTransactionAdded.InvokeAsync("Transakce byla úspěšně přidána!");
+
+
+            }
+            _storage.SaveTransactions(AccountData.Transactions);
+            
+            StateHasChanged();
+        }
+        else
+        {
             return;
         }
 
-
-        if (category != null)
-        {
-            try
-            {
-                var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate);
-                AccountData.Transactions.Add(t);
-                _storage.SaveTransactions(AccountData.Transactions);
-
-                await CloseModal();
-                await OnTransactionAdded.InvokeAsync("Transakce byla úspěšně přidána!");
-
-            }
-
-            catch (ArgumentException ex)
-            {
-                await OnTransactionFailed.InvokeAsync(ex.Message);
-            }
-        }
     }
 }
