@@ -16,6 +16,18 @@ a, .btn-link {
     animation: slideInRight 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
 
+.hover-card {
+    /* Tohle zajistí, že animace bude plynulá (trvá 0.2 sekundy) */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+    .hover-card:hover {
+        /* Posune kartu o 5 pixelů nahoru */
+        transform: translateY(-5px);
+        /* Zvýrazní stín, aby karta "vystoupila" z monitoru */
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        cursor: pointer; /* Změní kurzor na ručičku */
+    }
 @keyframes slideInRight {
     0% {
         transform: translateX(100%);

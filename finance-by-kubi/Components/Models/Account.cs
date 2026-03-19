@@ -32,6 +32,11 @@ public class Account
         Transactions.Add(transaction);
     }
 
+    public void RemoveTransaction(Transaction t) 
+    {
+        Transactions.Remove(t);
+    }
+
     public void AddCategory(string name) 
     { 
         Categories.Add(new Category(name));

@@ -7,12 +7,6 @@
 
 <h2>Můj přehled</h2>
 
-<button class="btn btn-primary mb-3" @onclick="ShowTransactionModal">
-    <span class="bi bi-plus-lg me-2"></span> Nová platba
-</button>
-<button class="btn btn-primary mb-3" @onclick="ShowCategoryModal">
-    <span class="bi bi-plus-lg me-2"></span> Přidat kategorii
-</button>
 
 
 
@@ -25,11 +19,44 @@ else
 {
    
 
+    <div class="row mb-4 fs-3">
 
-    <div class="alert alert-info fs-5">
-        Celkový zůstatek: <strong>@_account.Balance Kč</strong>
-        Celková útrata: <strong>@_account.TotalOutcome Kč </strong>
+        <div class="col-md3">
+            <button class="btn btn-primary mb-3" @onclick="ShowTransactionModal">
+                <span class="bi bi-plus-lg me-2"></span> Nová platba
+            </button>
+            <button class="btn btn-primary mb-3" @onclick="ShowCategoryModal">
+                <span class="bi bi-plus-lg me-2"></span> Přidat kategorii
+            </button>
+        </div>
+
+
+        <div class="col-md-3" >
+            <div class="card">
+                <div class="card-body" style="width: 200px">
+                    <h3> Zůstatek</h3>
+                    <strong>@_account.Balance.ToString("N2") Kč</strong>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Výdaje</h3>
+                    <strong style="color: darkred">@_account.TotalOutcome.ToString("N2") Kč </strong>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 align-content-lg-end">
+            <div class="card">
+                <div class="card-body">
+                     <h3> Příjmy </h3>
+                     <strong style="color: green">@_account.TotalIncome.ToString("N2") Kč </strong>
+                </div>
+            </div>
+        </div>
     </div>
+ 
 
     @* Všimni si těch CSS tříd (table, table-striped) – to je Bootstrap, který to obarví za tebe *@
     <table class="table table-striped table-hover mt-2">
@@ -56,12 +83,15 @@ else
                         @(t.IsIncome ? "+" : "-") @t.Amount Kč
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-outline-primary btn-sm" style="block-size: 30px" @onclick="() => EditTransaction(t)">
+                        <button class="btn btn-outline-primary btn-sm " style="block-size: 30px" 
+                        @onclick="() => EditTransaction(t)">
                             <i class="bi bi-pencil"></i>
                         </button>
                     </td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-outline-danger d-flex justify-content-center align-items-center" style="height: 30px; width: 30px">
+                        <button type="button" class="btn btn-outline-danger d-flex justify-content-center align-items-center" 
+                        style="height: 30px; width: 35px"
+                        @onclick="() => DeleteTransaction(t)">
                             <i class="bi bi-trash" style="font-size: 20px;"></i>
                         </button>
                     </td>
@@ -146,7 +176,7 @@ else
     private async Task HandleTransactionAdded(string message)
     {
         await ShowToast(message, true);
-        
+
         StateHasChanged();
     }
     private async Task HandleTransactionFailed(string message)
@@ -193,7 +223,13 @@ else
                 break;
         }
     }
- 
+
+    private async Task DeleteTransaction(Transaction t)
+    {
+        _account.RemoveTransaction(t);
+        _storage.SaveTransactions(_account.Transactions);
+        await ShowToast("Platba byla odebrána!", true);
+    }
 
 
     private void CloseToast()
