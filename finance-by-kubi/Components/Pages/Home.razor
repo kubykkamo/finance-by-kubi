@@ -67,14 +67,17 @@ else
                 <th>
 
                     <button class="btn btn-dark text-center" @onclick='() => SortTable("Datum")'> <strong> Datum
-                            
+                            <i class="@GetSortIcon("Datum")" ms-1> </i>
                         </strong>
                     </button>
                     
                 </th>
                 <th style="width: 40%">
                     
-                    <button class="btn btn-dark" @onclick='() => SortTable("Popis")'> <strong> Popis </strong> </button>
+                    <button class="btn btn-dark" @onclick='() => SortTable("Popis")'> <strong> Popis
+                    
+                            <i class="@GetSortIcon("Popis")" ms-1> </i>
+                    </strong> </button>
                    
                 </th>
                 <th>
@@ -102,9 +105,11 @@ else
                     </div>
                 </th>
                 <th class="text-end me-6">
-                    <button class="btn btn-dark" @onclick='() => SortTable("Částka")'> <strong> Částka <i class="@GetSortIcon("Částka")" ms-1> </i> </strong> </button>
-                    
-                    
+                    <button class="btn btn-dark" @onclick='() => SortTable("Částka")'> 
+                        <strong> Částka 
+                            <i class="@GetSortIcon("Částka")" ms-1> </i> 
+                        </strong> 
+                    </button>
                 </th>
                 <th style="width: 50px"></th>
                 <th style="width: 50px"></th>
@@ -215,7 +220,7 @@ else
     private string GetSortIcon(string columnName)
     {
         if (_lastHeader != columnName)
-            return "";
+            return "bi-arrow-up invisible";
 
         return _descending ? "bi bi-caret-down" : "bi bi-caret-up";
 
@@ -223,7 +228,7 @@ else
 
     private void ChangeCategory(string category, object? isChecked)
     {
-        
+
 
         bool chosen = (bool)(isChecked ?? false);
 
@@ -339,19 +344,21 @@ else
     {
 
         // 1. Založíme testovací kategorie
-       
-        
-       
+
+
+
         loadedCategories = _storage.LoadCategories();
-        loadedTransactions = _storage.LoadTransactions() 
+        loadedTransactions = _storage.LoadTransactions()
+
         .OrderByDescending(t => t.Date)
         .ToList();
-        
 
-        
+
+
         // 2. Vytvoříme účet (přesně jak jsi to měl ve WinForms)
         _account = new Account(loadedTransactions, loadedCategories);
 
+        SortTable("Datum");
         // 3. Vygenerujeme testovací data, abychom měli na co koukat
         
     }
