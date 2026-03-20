@@ -97,7 +97,7 @@ public class Account
         
         var transactions = Transactions
             .Where(t => t.Category == category)
-            .OrderByDescending(t => t.Date)
+            
             .ToList();
 
        if(transactions.Count == 0) 

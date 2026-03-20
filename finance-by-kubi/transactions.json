@@ -1,10 +1,10 @@
 [
   {
-    "Description": "Benzina",
-    "Amount": 1500,
-    "Date": "2026-03-02T18:45:00+01:00",
+    "Description": "N\u00E1jem",
+    "Amount": 19000,
+    "Date": "2026-03-16T00:00:00",
     "IsIncome": false,
-    "CategoryName": "Doprava"
+    "CategoryName": "Bydleni"
   },
   {
     "Description": "iPhone",
@@ -12,6 +12,20 @@
     "Date": "2026-03-08T15:49:11+01:00",
     "IsIncome": false,
     "CategoryName": "Zabava"
+  },
+  {
+    "Description": "Benzina",
+    "Amount": 1500,
+    "Date": "2026-03-02T18:45:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Doprava"
+  },
+  {
+    "Description": "Rohlik.cz",
+    "Amount": 950,
+    "Date": "2026-03-04T10:20:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Potraviny"
   },
   {
     "Description": "Kino",
@@ -35,13 +49,6 @@
     "CategoryName": "Potraviny"
   },
   {
-    "Description": "N\u00E1jem",
-    "Amount": 19000,
-    "Date": "2026-03-16T00:00:00",
-    "IsIncome": true,
-    "CategoryName": "Bydleni"
-  },
-  {
     "Description": "Pekarna",
     "Amount": 120,
     "Date": "2026-03-05T14:10:00+01:00",
@@ -49,24 +56,10 @@
     "CategoryName": "Potraviny"
   },
   {
-    "Description": "Pivo",
-    "Amount": 40,
-    "Date": "2026-03-15T14:29:28+01:00",
-    "IsIncome": false,
-    "CategoryName": "Potraviny"
-  },
-  {
-    "Description": "Rohlik.cz",
-    "Amount": 950,
-    "Date": "2026-03-04T10:20:00+01:00",
-    "IsIncome": false,
-    "CategoryName": "Potraviny"
-  },
-  {
-    "Description": "Test",
-    "Amount": 55,
-    "Date": "2026-03-16T00:00:00",
+    "Description": "Vyplata",
+    "Amount": 150000,
+    "Date": "2026-03-20T00:00:00+01:00",
     "IsIncome": true,
-    "CategoryName": "Doprava"
+    "CategoryName": "Vyplata"
   }
 ]

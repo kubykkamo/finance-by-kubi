@@ -26,7 +26,7 @@ a, .btn-link {
         transform: translateY(-5px);
         /* Zvýrazní stín, aby karta "vystoupila" z monitoru */
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-        cursor: pointer; /* Změní kurzor na ručičku */
+         /* Změní kurzor na ručičku */
     }
 @keyframes slideInRight {
     0% {
