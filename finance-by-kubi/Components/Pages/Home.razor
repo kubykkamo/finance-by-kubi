@@ -64,24 +64,35 @@ else
     <table class="table table-striped table-hover mt-2">
         <thead class="table-dark">
             <tr>
-                <th @onclick='() => SortTable("Datum")' style="cursor: pointer; width: 300px">Datum</th>
-                <th @onclick='() => SortTable("Popis")' style="cursor: pointer; width: 800px">Popis</th>
-                <th style="width: 200px">
+                <th>
+
+                    <button class="btn btn-dark text-center" @onclick='() => SortTable("Datum")'> <strong> Datum
+                            
+                        </strong>
+                    </button>
+                    
+                </th>
+                <th style="width: 40%">
+                    
+                    <button class="btn btn-dark" @onclick='() => SortTable("Popis")'> <strong> Popis </strong> </button>
+                   
+                </th>
+                <th>
 
                     <div class="dropdown fs-6">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                            <i class="bi bi-filter"></i> Kategorie
+                        <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="bi bi-filter"></i> <strong>Kategorie</strong>
                         </button>
     
                         <ul class="dropdown-menu p-2" style="min-width: 200px;">
                             @foreach (var category in _account.Categories)
                             {
-                                <li style="margin-left: 15px">
-                                    <div class="form-check mb-1 fs-6" @onclick:stopPropagation="false">
-                                        <input class="form-check-input fs-4" type="checkbox" id="cat-@category"
+                                <li class="ms-3">
+                                    <div class="form-check mb-1 fs-6">
+                                        <input class="form-check-input fs-4 " type="checkbox" id="cat-@category.Name"
                                                checked="@ChosenCategories.Contains(category.Name)"
                                                @onchange="@(e => ChangeCategory(category.Name, e.Value))" />
-                                        <label class="btn" for="cat-@category" style="cursor: pointer;">
+                                        <label class="btn" for="cat-@category.Name" style="cursor: pointer;">
                                             @category
                                         </label>
                                     </div>
@@ -90,7 +101,11 @@ else
                         </ul>
                     </div>
                 </th>
-                <th class="text-end" @onclick='() => SortTable("Částka")' style="cursor: pointer">Částka</th>
+                <th class="text-end me-6">
+                    <button class="btn btn-dark" @onclick='() => SortTable("Částka")'> <strong> Částka <i class="@GetSortIcon("Částka")" ms-1> </i> </strong> </button>
+                    
+                    
+                </th>
                 <th style="width: 50px"></th>
                 <th style="width: 50px"></th>
             </tr>
@@ -196,6 +211,15 @@ else
 
     //Transaction modal
     private AddTransactionModal transactionModal;
+
+    private string GetSortIcon(string columnName)
+    {
+        if (_lastHeader != columnName)
+            return "";
+
+        return _descending ? "bi bi-caret-down" : "bi bi-caret-up";
+
+    }
 
     private void ChangeCategory(string category, object? isChecked)
     {
