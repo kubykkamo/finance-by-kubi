@@ -1,5 +1,12 @@
 [
   {
+    "Description": "Vyplata",
+    "Amount": 1500000,
+    "Date": "2026-03-20T00:00:00+01:00",
+    "IsIncome": true,
+    "CategoryName": "Vyplata"
+  },
+  {
     "Description": "N\u00E1jem",
     "Amount": 19000,
     "Date": "2026-03-16T00:00:00",
@@ -54,12 +61,5 @@
     "Date": "2026-03-05T14:10:00+01:00",
     "IsIncome": false,
     "CategoryName": "Potraviny"
-  },
-  {
-    "Description": "Vyplata",
-    "Amount": 150000,
-    "Date": "2026-03-20T00:00:00+01:00",
-    "IsIncome": true,
-    "CategoryName": "Vyplata"
   }
 ]
