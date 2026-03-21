@@ -1,5 +1,6 @@
 using finance_by_kubi.Components;
 using finance_by_kubi.Data;
+using finance_by_kubi.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -12,6 +13,28 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=finance.db"));
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    // 1. Ujistíme se, že databáze existuje a jsou v ní tabulky
+    context.Database.EnsureCreated();
+
+    // 2. Pokud v tabulce Accounts nic není, přidáme testovací účet
+    if (!context.Accounts.Any())
+    {
+        var testAccount = new Account
+        {
+            Name = "Test",
+            Surname = "Account"
+            // Tady doplň vlastnosti podle tvého modelu Account (např. Name)
+            // Name = "Hlavní bankovní účet" 
+        };
+
+        context.Accounts.Add(testAccount);
+        context.SaveChanges();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

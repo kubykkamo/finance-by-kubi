@@ -1,6 +1,9 @@
 ﻿@using finance_by_kubi.Models
 @using finance_by_kubi.Services
+@using finance_by_kubi.Data;
 @inject IJSRuntime JSRuntime
+@inject AppDbContext _context
+@using Microsoft.EntityFrameworkCore;
 
 <div class="modal fade" id="categoryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -17,7 +20,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @onclick="CloseModal">Zavřít</button>
-                    <button type="button" class="btn btn-success" @onclick="VerifyCategory">Přidat</button>
+                <button type="button" class="btn btn-success" @onclick='() => AddCategory(NewCategoryName, 1)' >Přidat</button>
                 </div>
             </div>
         </div>
@@ -47,23 +50,41 @@
         await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "categoryModal");
     }
 
-    private async Task VerifyCategory()
+    public async Task AddCategory(string categoryName, int accountId)
     {
+        // 1. Ověření existence účtu (VŽDY jako první)
+        var accountExists = _context.Accounts.Any(a => a.Id == accountId);
+
+        if (string.IsNullOrWhiteSpace(categoryName))
+        {
+            await OnCategoryFailed.InvokeAsync("Kategorie musí mít jméno");
+            return;
+        }
+        if (!accountExists)
+        {
+            // Tady se rozhodni: vyhodit výjimku, nebo vypsat chybu
+            await OnCategoryFailed.InvokeAsync($"Chyba: Účet s ID {accountId} neexistuje!");
+        }
+
+        // 2. Vytvoření nového objektu
+        var newCategory = new Category
+        {
+            Name = categoryName,
+            AccountId = accountId // Stačí přiřadit jen ID, EF si to přebere
+        };
+
+        // 3. Uložení
         try
         {
-            var c = new Category(NewCategoryName);
-            AccountData.Categories.Add(c);
-            _storage.SaveCategories(AccountData.Categories);
-
-            NewCategoryName = "";
-            await CloseModal();
-
-            // Zavoláme rodiče (Home.razor), aby ukázal toast a aktualizoval UI
-            await OnCategoryAdded.InvokeAsync("Kategorie úspěšně přidána!");
+            _context.Categories.Add(newCategory);
+            _context.SaveChanges();
+            await OnCategoryAdded.InvokeAsync("Kategorie přidána");
         }
-        catch (ArgumentException ex)
+        catch (Exception ex)
         {
-            await OnCategoryFailed.InvokeAsync(ex.Message);
+            
+            await OnCategoryFailed.InvokeAsync($"Průšvih: {ex.InnerException?.Message ?? ex.Message}");
+        }
+       
         }
     }
-}

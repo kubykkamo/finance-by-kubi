@@ -1,7 +1,10 @@
 ﻿@page "/"
 @* Tohle říká stránce, kde najde tvoje třídy *@
+@using finance_by_kubi.Data;
 @using finance_by_kubi.Models
 @using finance_by_kubi.Services
+@inject AppDbContext DbContext
+@using Microsoft.EntityFrameworkCore
 
 <PageTitle>Přehled - Finance by </PageTitle>
 
@@ -356,23 +359,23 @@ else
     }
 
     // Tato metoda se spustí sama hned při načtení stránky
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
 
         // 1. Založíme testovací kategorie
 
 
+        var transactions = await DbContext.Transactions.Include(t => t.Category)
+        .ToListAsync();
 
-        loadedCategories = _storage.LoadCategories();
-        loadedTransactions = _storage.LoadTransactions()
+        var categories = await DbContext.Categories
+        .ToListAsync();
 
-        .OrderByDescending(t => t.Date)
-        .ToList();
-
+        
 
 
         // 2. Vytvoříme účet (přesně jak jsi to měl ve WinForms)
-        _account = new Account(loadedTransactions, loadedCategories);
+        _account = new Account(transactions, categories);
 
         SortTable("Datum");
         // 3. Vygenerujeme testovací data, abychom měli na co koukat

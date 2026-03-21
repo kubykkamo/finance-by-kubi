@@ -11,7 +11,7 @@ using finance_by_kubi.Data;
 namespace finance_by_kubi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260321100146_InitialCreate")]
+    [Migration("20260321115131_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,7 +36,7 @@ namespace finance_by_kubi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Account");
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("finance_by_kubi.Models.Category", b =>
@@ -45,7 +45,7 @@ namespace finance_by_kubi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AccountId")
+                    b.Property<int?>("AccountId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Color")
@@ -100,9 +100,7 @@ namespace finance_by_kubi.Migrations
                 {
                     b.HasOne("finance_by_kubi.Models.Account", "Account")
                         .WithMany("Categories")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
 
                     b.Navigation("Account");
                 });
