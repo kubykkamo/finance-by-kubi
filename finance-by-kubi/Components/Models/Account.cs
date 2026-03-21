@@ -11,6 +11,10 @@ namespace finance_by_kubi.Models;
 public class Account
 {
     
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Surname { get; set; }
+
     public List<Transaction> Transactions{ get; set; }
     public List<Category> Categories { get; set; }
     private const string filePath = "account_data.json";
@@ -42,7 +46,7 @@ public class Account
         Categories.Add(new Category(name));
     }
 
-    public string Name { get; set; }
+   
     public decimal TotalIncome => Transactions
         .Where(t => t.IsIncome == true)
         .Sum(t => t.Amount);
@@ -60,7 +64,7 @@ public class Account
         foreach (var t in transactions)
         {
 
-            t.Category = Categories.FirstOrDefault(c => c.Name == t.CategoryName);
+            t.Category = Categories.FirstOrDefault(c => c.Name == t.Category?.Name);
         }
 
 
@@ -115,6 +119,11 @@ public class Account
         var sortedTransactions = GetSortedTransactions(sortType, catTransactions);
 
         return sortedTransactions;
+
+    }
+
+    public Account() 
+    {
 
     }
 

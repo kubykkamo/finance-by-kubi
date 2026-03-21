@@ -7,6 +7,20 @@
     "CategoryName": "Vyplata"
   },
   {
+    "Description": "Energie",
+    "Amount": 7990,
+    "Date": "2026-03-20T00:00:00+01:00",
+    "IsIncome": false,
+    "CategoryName": "Domacnost"
+  },
+  {
+    "Description": "Men\u0161\u00ED n\u00E1kup",
+    "Amount": 200,
+    "Date": "2026-03-16T17:47:44+01:00",
+    "IsIncome": false,
+    "CategoryName": "Potraviny"
+  },
+  {
     "Description": "N\u00E1jem",
     "Amount": 19000,
     "Date": "2026-03-16T00:00:00",
@@ -21,9 +35,9 @@
     "CategoryName": "Zabava"
   },
   {
-    "Description": "Benzina",
-    "Amount": 1500,
-    "Date": "2026-03-02T18:45:00+01:00",
+    "Description": "Listky na vlak",
+    "Amount": 280,
+    "Date": "2026-03-05T07:45:00+01:00",
     "IsIncome": false,
     "CategoryName": "Doprava"
   },
@@ -42,24 +56,10 @@
     "CategoryName": "Zabava"
   },
   {
-    "Description": "Listky na vlak",
-    "Amount": 280,
-    "Date": "2026-03-05T07:45:00+01:00",
+    "Description": "Benzina",
+    "Amount": 1500,
+    "Date": "2026-03-02T18:45:00+01:00",
     "IsIncome": false,
     "CategoryName": "Doprava"
-  },
-  {
-    "Description": "Men\u0161\u00ED n\u00E1kup",
-    "Amount": 200,
-    "Date": "2026-03-16T17:47:44+01:00",
-    "IsIncome": false,
-    "CategoryName": "Potraviny"
-  },
-  {
-    "Description": "Pekarna",
-    "Amount": 120,
-    "Date": "2026-03-05T14:10:00+01:00",
-    "IsIncome": false,
-    "CategoryName": "Potraviny"
   }
 ]

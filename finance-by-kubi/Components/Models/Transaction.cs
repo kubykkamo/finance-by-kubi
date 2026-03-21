@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Linq;
@@ -8,26 +9,28 @@ namespace finance_by_kubi.Models;
 
 public class Transaction
 {
+    public int Id { get; set; }
     public string Description { get; set; }
     public decimal Amount { get; set; }
     public DateTime Date { get; set; }
     public bool IsIncome { get; set; }
 
-    public string CategoryName { get; set; }
 
-    private Category _category;
+    public int CategoryId { get; set; }
+    
+
+    public int AccountId { get; set; }
+    public Account Account { get; set; }
+
+
+
+
+    private Category _category = null!;
     [JsonIgnore]
     public Category Category
     {
-        get { return _category; }
-        set
-        {
-            _category = value;
-            if (value != null)
-            {
-                Category.Name = value.Name;
-            }
-        }
+        get => _category;
+        set => _category = value;
     }
 
 
@@ -50,7 +53,7 @@ public class Transaction
         Date = DateTime.Now;
         IsIncome = isIncome;
 
-        CategoryName = category.Name;
+        
         Category = category;
     }
 
@@ -73,7 +76,7 @@ public class Transaction
         Date = date;
         IsIncome = isIncome;
 
-        CategoryName = category.Name;
+        
         Category = category;
     }
     public Transaction() { }

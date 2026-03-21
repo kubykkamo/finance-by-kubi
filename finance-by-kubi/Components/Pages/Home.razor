@@ -32,16 +32,16 @@ else
         
 
         <div class="col-md-3">
-            <div class="card shadow-p border-2 hover-card">
+            <div class="card shadow-p border-2 hover-card rounded-4">
                 <div class="card-body" style="width: 400px">
                     <h3>Výdaje</h3>
-                    <strong style="color: darkred">@_account.TotalOutcome.ToString("N2") Kč </strong>
+                    <strong style="color: red"> - @_account.TotalOutcome.ToString("N2") Kč </strong>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-sm border-2 hover-card">
+            <div class="card shadow-sm border-2 hover-card rounded-4">
                 <div class="card-body" style="width: 400px">
                     <h3> Zůstatek</h3>
                     <strong>@_account.Balance.ToString("N2") Kč</strong>
@@ -49,8 +49,8 @@ else
             </div>
         </div>
 
-        <div class="col-md-3 align-content-lg-end">
-            <div class="card shadow-p border-2 hover-card">
+        <div class="col-md-3 align-content-lg-end ">
+            <div class="card shadow-p border-2 hover-card rounded-4">
                 <div class="card-body" style="width: 400px">
                      <h3> Příjmy </h3>
                      <strong style="color: green">@_account.TotalIncome.ToString("N2") Kč </strong>
@@ -61,26 +61,27 @@ else
  
 
     @* Všimni si těch CSS tříd (table, table-striped) – to je Bootstrap, který to obarví za tebe *@
-    <table class="table table-striped table-hover mt-2">
+    <table class="table table-striped table-hover mt-2" style="table-layout: fixed; vertical-align: middle;">
         <thead class="table-dark">
             <tr>
-                <th>
+                <th style="width: 20%">
 
-                    <button class="btn btn-dark text-center" @onclick='() => SortTable("Datum")'> <strong> Datum
-                            <i class="@GetSortIcon("Datum")" ms-1> </i>
+                    <button class="btn btn-dark text-center" @onclick='() => SortTable("Datum")'>
+                        <i class="bi bi-filter"></i> <strong> Datum
+                        <i class="@GetSortIcon("Datum")" ms-1> </i>
                         </strong>
                     </button>
                     
                 </th>
                 <th style="width: 40%">
                     
-                    <button class="btn btn-dark" @onclick='() => SortTable("Popis")'> <strong> Popis
-                    
-                            <i class="@GetSortIcon("Popis")" ms-1> </i>
+                    <button class="btn btn-dark" @onclick='() => SortTable("Popis")'>
+                        <i class="bi bi-filter"></i> <strong> Popis         
+                        <i class=" fs-5 @GetSortIcon("Popis")" ms-1> </i>
                     </strong> </button>
                    
                 </th>
-                <th>
+                <th style="width: 20%">
 
                     <div class="dropdown fs-6">
                         <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
@@ -101,12 +102,17 @@ else
                                     </div>
                                 </li>
                             }
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-secondary me-md-2" type="button" @onclick="ResetCategories">Reset</button>
+                            </div>
                         </ul>
+                       
                     </div>
                 </th>
-                <th class="text-end me-6">
+                <th class="text-end me-6" style="20%">
                     <button class="btn btn-dark" @onclick='() => SortTable("Částka")'> 
-                        <strong> Částka 
+                         <i class="bi bi-filter"></i>
+                         <strong> Částka 
                             <i class="@GetSortIcon("Částka")" ms-1> </i> 
                         </strong> 
                     </button>
@@ -122,7 +128,7 @@ else
                 <tr>
                     <td>@t.Date.ToShortDateString()</td>
                     <td>@t.Description</td>
-                    <td><span class="badge bg-secondary">@t.CategoryName</span></td>
+                    <td><span class="badge bg-secondary">@t.Category?.Name</span></td>
                     @* Tady dynamicky měníme barvu (červená/zelená) podle toho, jestli je to příjem *@
                     <td class="text-end @(t.IsIncome ? "text-success fw-bold" : "text-danger")">
                         @(t.IsIncome ? "+" : "-") @t.Amount.ToString("N2") Kč
@@ -222,7 +228,12 @@ else
         if (_lastHeader != columnName)
             return "bi-arrow-up invisible";
 
-        return _descending ? "bi bi-caret-down" : "bi bi-caret-up";
+        if (columnName != "Popis")
+            return _descending ? "bi bi-caret-down-fill" : "bi bi-caret-up-fill";
+        else
+        {
+            return _descending ? "bi bi-sort-alpha-down-alt" : "bi bi-sort-alpha-down";
+        }
 
     }
 
@@ -253,6 +264,11 @@ else
         return _account.Transactions
         .Where(t => ChosenCategories.Contains(t.Category.Name));
 
+    }
+
+    private void ResetCategories()
+    {
+        ChosenCategories.Clear();
     }
 
     private async Task ShowTransactionModal()

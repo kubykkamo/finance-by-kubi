@@ -132,7 +132,7 @@
         NewDescription = t.Description;
         NewAmount = t.Amount;
         IsIncome = t.IsIncome;
-        selectedCategory = t.CategoryName;
+        selectedCategory = t.Category.Name;
         NewDate = t.Date;
         await JSRuntime.InvokeVoidAsync("showBootstrapModal", "transactionModal");
         StateHasChanged();
@@ -146,7 +146,7 @@
                 _editingTransaction.Description = NewDescription;
                 _editingTransaction.Amount = NewAmount;
                 _editingTransaction.IsIncome = IsIncome;
-                _editingTransaction.CategoryName = selectedCategory;
+                _editingTransaction.Category.Name = selectedCategory;
                 _editingTransaction.Date = NewDate;
 
 

@@ -23,10 +23,10 @@ a, .btn-link {
 
     .hover-card:hover {
         /* Posune kartu o 5 pixelů nahoru */
-        transform: translateY(-5px);
+        transform: translateY(-10px);
         /* Zvýrazní stín, aby karta "vystoupila" z monitoru */
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-         /* Změní kurzor na ručičku */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.20);
+        /* Změní kurzor na ručičku */
     }
 @keyframes slideInRight {
     0% {
