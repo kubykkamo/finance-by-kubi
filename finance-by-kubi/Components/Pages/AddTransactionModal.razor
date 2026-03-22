@@ -1,5 +1,5 @@
 ﻿@using finance_by_kubi.Models
-@using finance_by_kubi.Services
+
 @inject IJSRuntime JSRuntime
 
 <div class="modal fade" id="transactionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
@@ -63,7 +63,7 @@
 
     [Parameter]
     public Account AccountData { get; set; }
-    private FileStorageService _storage = new FileStorageService();
+    
     private string NewDescription = "";
     private decimal NewAmount = 0;
     private bool IsIncome = false;
@@ -167,7 +167,7 @@
 
 
             }
-            _storage.SaveTransactions(AccountData.Transactions);
+            
             
             StateHasChanged();
         }

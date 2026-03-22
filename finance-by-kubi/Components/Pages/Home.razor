@@ -2,7 +2,7 @@
 @* Tohle říká stránce, kde najde tvoje třídy *@
 @using finance_by_kubi.Data;
 @using finance_by_kubi.Models
-@using finance_by_kubi.Services
+
 @inject AppDbContext DbContext
 @using Microsoft.EntityFrameworkCore
 
@@ -193,7 +193,7 @@ else
     List<Category> loadedCategories;
 
     private HashSet<string> ChosenCategories =  new();
-    FileStorageService _storage = new FileStorageService();
+
 
     // TOAST    
     private bool isSuccess;
@@ -332,7 +332,7 @@ else
     private async Task DeleteTransaction(Transaction t)
     {
         _account.RemoveTransaction(t);
-        _storage.SaveTransactions(_account.Transactions);
+        
         await ShowToast("Platba byla odebrána!", true);
     }
 
