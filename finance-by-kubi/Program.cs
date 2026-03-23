@@ -9,8 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=finance.db"));
+// Všimni si toho slova "Factory" na konci
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
+    options.UseSqlite("Data Source=finance.db")); // Tady nech svůj stávající connection string
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

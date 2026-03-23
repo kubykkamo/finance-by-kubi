@@ -5,6 +5,7 @@
 
 @inject AppDbContext DbContext
 @using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<AppDbContext> DbFactory
 
 <PageTitle>Přehled - Finance by </PageTitle>
 
@@ -189,9 +190,7 @@ else
 @code {
     // Tady začíná čistý C#
     private Account? _account;
-    List<Transaction> loadedTransactions;
-    List<Category> loadedCategories;
-
+    
     private HashSet<string> ChosenCategories =  new();
 
 
@@ -214,8 +213,10 @@ else
     }
     private async Task HandleCategoryAdded(string message)
     {
+        await ReloadData();
         await ShowToast(message, true);
-        StateHasChanged();
+        
+        
     }
     private async Task HandleCategoryFailed(string message)
     {
@@ -280,9 +281,10 @@ else
     }
     private async Task HandleTransactionAdded(string message)
     {
+        await ReloadData();
         await ShowToast(message, true);
-
-        StateHasChanged();
+        
+        
     }
     private async Task HandleTransactionFailed(string message)
     {
@@ -332,7 +334,7 @@ else
     private async Task DeleteTransaction(Transaction t)
     {
         _account.RemoveTransaction(t);
-        
+
         await ShowToast("Platba byla odebrána!", true);
     }
 
@@ -340,6 +342,25 @@ else
     private void CloseToast()
     {
         showToast = false;
+    }
+
+    private async Task ReloadData()
+    {
+        // 1. Vytvoříme čistý kontext, aby si nepamatoval stará data (pokud používáš Factory)
+        using var db = DbFactory.CreateDbContext();
+
+        // 2. Načteme jen ty záznamy, které patří k tomuto konkrétnímu účtu
+        _account.Transactions = await db.Transactions
+            .Include(t => t.Category)
+            .Where(t => t.AccountId == _account.Id) // <-- TOTO JE KRITICKÉ
+            .ToListAsync();
+
+        _account.Categories = await db.Categories
+            .Where(c => c.AccountId == _account.Id) // <-- TADY TAKY
+            .ToListAsync();
+
+        // 3. Nakopneme Blazor, aby překreslil UI
+        StateHasChanged();
     }
 
     private async Task ShowToast(string message, bool succ)
@@ -361,27 +382,27 @@ else
     // Tato metoda se spustí sama hned při načtení stránky
     protected override async Task OnInitializedAsync()
     {
+        // 1. Zkusíme najít účet s ID 1 přímo v databázi
+        _account = await DbContext.Accounts.FirstOrDefaultAsync(a => a.Id == 1);
 
-        // 1. Založíme testovací kategorie
-
-
-        var transactions = await DbContext.Transactions.Include(t => t.Category)
-        .ToListAsync();
-
-        var categories = await DbContext.Categories
-        .ToListAsync();
-
+        // 2. Pokud účet neexistuje (např. při úplně prvním spuštění s čistou databází), vytvoříme ho
+        if (_account == null)
+        {
+            // Předpokládám, že máš v modelu Account prázdný konstruktor.
+            // Pokud ne, použij ten svůj: _account = new Account(new List<Transaction>(), new List<Category>());
+            _account = new Account();
         
+            DbContext.Accounts.Add(_account);
+            await DbContext.SaveChangesAsync(); // Entity Framework mu automaticky přidělí ID (pravděpodobně 1)
+        }
 
+        // 3. Nyní už má náš _account zaručeně správné ID (1).
+        // Můžeme tedy s klidem zavolat tvoji existující metodu, která se postará o načtení kategorií a transakcí z DB!
+        await ReloadData();
 
-        // 2. Vytvoříme účet (přesně jak jsi to měl ve WinForms)
-        _account = new Account(transactions, categories);
-
+        // 4. Seřadíme tabulku
         SortTable("Datum");
-        // 3. Vygenerujeme testovací data, abychom měli na co koukat
-        
     }
-
     private void GenerateTestData()
     {
         var random = new Random();

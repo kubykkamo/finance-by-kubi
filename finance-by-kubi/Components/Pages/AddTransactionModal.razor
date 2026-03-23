@@ -1,5 +1,7 @@
 ﻿@using finance_by_kubi.Models
-
+@using finance_by_kubi.Data
+@inject AppDbContext _context
+@using Microsoft.EntityFrameworkCore;
 @inject IJSRuntime JSRuntime
 
 <div class="modal fade" id="transactionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
@@ -51,7 +53,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @onclick="CloseModal">Zrušit</button>
-                                <button type="button" class="btn btn-success" @onclick="VerifyTransaction">Uložit</button>
+                                <button type="button" class="btn btn-success" @onclick='() => VerifyTransaction(1)'>Uložit</button>
                             </div>
                         </div>
                     </div>
@@ -63,7 +65,7 @@
 
     [Parameter]
     public Account AccountData { get; set; }
-    
+
     private string NewDescription = "";
     private decimal NewAmount = 0;
     private bool IsIncome = false;
@@ -137,8 +139,10 @@
         await JSRuntime.InvokeVoidAsync("showBootstrapModal", "transactionModal");
         StateHasChanged();
     }
-    private async Task VerifyTransaction()
+    private async Task VerifyTransaction(int accountId)
     {
+        var accountExists = _context.Accounts.Any(a => a.Id == accountId);
+
         if (ValidateInput().IsCompleted)
         {
             if (_editingTransaction != null)
@@ -151,23 +155,40 @@
 
 
                 _editingTransaction = null;
+                _context.Categories.Attach(category);
+                await _context.SaveChangesAsync();
                 await CloseModal();
                 await OnTransactionAdded.InvokeAsync("Změny uloženy");
 
+            }
+            if (!accountExists)
+            {
+                // Tady se rozhodni: vyhodit výjimku, nebo vypsat chybu
+                await OnTransactionFailed.InvokeAsync($"Chyba: Účet s ID {accountId} neexistuje!");
             }
 
             else
             {
 
 
-                var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate);
-                AccountData.Transactions.Add(t);
+                var t = new Transaction(NewDescription, NewAmount, IsIncome, category, NewDate)
+                {
+                    AccountId = accountId,
+                   
+                };
+
+
+                _context.Categories.Attach(category);
+                _context.Transactions.Add(t);
+                await _context.SaveChangesAsync();
+                ClearAll();
 
                 await OnTransactionAdded.InvokeAsync("Transakce byla úspěšně přidána!");
+                
 
 
             }
-            
+
             
             StateHasChanged();
         }

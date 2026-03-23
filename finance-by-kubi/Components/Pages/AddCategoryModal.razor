@@ -20,7 +20,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @onclick="CloseModal">Zavřít</button>
-                <button type="button" class="btn btn-success" @onclick='() => AddCategory(NewCategoryName, 1)' >Přidat</button>
+                <button type="button" class="btn btn-success" @onclick='() => AddCategory(1)' >Přidat</button>
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
     [Parameter]
     public EventCallback<string> OnCategoryFailed { get; set; }
     private string NewCategoryName = "";
-   
+
 
     // Veřejná metoda, aby šel modal otevřít zvenku
     public async Task OpenModal()
@@ -50,12 +50,12 @@
         await JSRuntime.InvokeVoidAsync("hideBootstrapModal", "categoryModal");
     }
 
-    public async Task AddCategory(string categoryName, int accountId)
+    public async Task AddCategory( int accountId)
     {
         // 1. Ověření existence účtu (VŽDY jako první)
         var accountExists = _context.Accounts.Any(a => a.Id == accountId);
 
-        if (string.IsNullOrWhiteSpace(categoryName))
+        if (string.IsNullOrWhiteSpace(NewCategoryName))
         {
             await OnCategoryFailed.InvokeAsync("Kategorie musí mít jméno!");
             return;
@@ -69,15 +69,17 @@
         // 2. Vytvoření nového objektu
         var newCategory = new Category
         {
-            Name = categoryName,
+            Name = NewCategoryName,
             AccountId = accountId // Stačí přiřadit jen ID, EF si to přebere
         };
+
+        NewCategoryName = "";
 
         // 3. Uložení
         try
         {
             _context.Categories.Add(newCategory);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             await OnCategoryAdded.InvokeAsync("Kategorie přidána!");
         }
         catch (Exception ex)
