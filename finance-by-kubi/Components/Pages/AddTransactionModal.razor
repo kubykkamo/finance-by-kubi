@@ -150,16 +150,25 @@
                 _editingTransaction.Description = NewDescription;
                 _editingTransaction.Amount = NewAmount;
                 _editingTransaction.IsIncome = IsIncome;
-                _editingTransaction.Category.Name = selectedCategory;
                 _editingTransaction.Date = NewDate;
 
+                // 1. Připojíme existující kategorii, aby se nevytvářel duplikát
+                _context.Categories.Attach(category);
+
+                // 2. Správně prohodíme celý objekt kategorie a její ID
+                _editingTransaction.Category = category;
+                _editingTransaction.CategoryId = category.Id;
+
+                // 3. Řekneme Entity Frameworku, ať tento objekt zvenčí updatuje
+                _context.Transactions.Update(_editingTransaction);
+
+                // 4. Fyzicky uložíme do databáze!
+                await _context.SaveChangesAsync();
 
                 _editingTransaction = null;
-                _context.Categories.Attach(category);
-                await _context.SaveChangesAsync();
                 await CloseModal();
                 await OnTransactionAdded.InvokeAsync("Změny uloženy");
-
+                return;
             }
             if (!accountExists)
             {
