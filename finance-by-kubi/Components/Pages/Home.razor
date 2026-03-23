@@ -190,7 +190,7 @@ else
 @code {
     // Tady začíná čistý C#
     private Account? _account;
-    
+
     private HashSet<string> ChosenCategories =  new();
 
 
@@ -215,8 +215,8 @@ else
     {
         await ReloadData();
         await ShowToast(message, true);
-        
-        
+
+
     }
     private async Task HandleCategoryFailed(string message)
     {
@@ -283,8 +283,8 @@ else
     {
         await ReloadData();
         await ShowToast(message, true);
-        
-        
+
+
     }
     private async Task HandleTransactionFailed(string message)
     {
@@ -335,6 +335,14 @@ else
     {
         _account.RemoveTransaction(t);
 
+        using var db = DbFactory.CreateDbContext();
+
+        db.Transactions.Remove(t);
+
+        await db.SaveChangesAsync();
+
+        await ReloadData();
+
         await ShowToast("Platba byla odebrána!", true);
     }
 
@@ -346,20 +354,18 @@ else
 
     private async Task ReloadData()
     {
-        // 1. Vytvoříme čistý kontext, aby si nepamatoval stará data (pokud používáš Factory)
+      
         using var db = DbFactory.CreateDbContext();
 
-        // 2. Načteme jen ty záznamy, které patří k tomuto konkrétnímu účtu
         _account.Transactions = await db.Transactions
             .Include(t => t.Category)
-            .Where(t => t.AccountId == _account.Id) // <-- TOTO JE KRITICKÉ
+            .Where(t => t.AccountId == _account.Id) 
             .ToListAsync();
 
         _account.Categories = await db.Categories
-            .Where(c => c.AccountId == _account.Id) // <-- TADY TAKY
+            .Where(c => c.AccountId == _account.Id) 
             .ToListAsync();
 
-        // 3. Nakopneme Blazor, aby překreslil UI
         StateHasChanged();
     }
 
@@ -379,25 +385,23 @@ else
 
     }
 
-    // Tato metoda se spustí sama hned při načtení stránky
+
     protected override async Task OnInitializedAsync()
     {
-        // 1. Zkusíme najít účet s ID 1 přímo v databázi
+    
         _account = await DbContext.Accounts.FirstOrDefaultAsync(a => a.Id == 1);
 
-        // 2. Pokud účet neexistuje (např. při úplně prvním spuštění s čistou databází), vytvoříme ho
+       
         if (_account == null)
         {
-            // Předpokládám, že máš v modelu Account prázdný konstruktor.
-            // Pokud ne, použij ten svůj: _account = new Account(new List<Transaction>(), new List<Category>());
+          
             _account = new Account();
         
             DbContext.Accounts.Add(_account);
-            await DbContext.SaveChangesAsync(); // Entity Framework mu automaticky přidělí ID (pravděpodobně 1)
+            await DbContext.SaveChangesAsync(); 
         }
 
-        // 3. Nyní už má náš _account zaručeně správné ID (1).
-        // Můžeme tedy s klidem zavolat tvoji existující metodu, která se postará o načtení kategorií a transakcí z DB!
+       
         await ReloadData();
 
         // 4. Seřadíme tabulku
