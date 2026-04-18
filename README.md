@@ -23,15 +23,7 @@ This project leverages the modern .NET ecosystem and standard web technologies:
 **Backend:** C#, .NET.
 **Database & ORM:** SQLite database managed via Entity Framework Core for reliable and lightweight data storage.
 
-## ⚙️ Getting Started
-
-To get a local copy up and running, follow these simple steps.
-
-### Prerequisites
-* [.NET 8.0 SDK](https://dotnet.microsoft.com/download) (or corresponding version used in the project)
-* Visual Studio / VS Code or any compatible IDE
-
-📸 Screenshots
+## 📸 Screenshots
 Here is a visual breakdown of the application’s core features.
 
 🖥️ Dashboard Overview
