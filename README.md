@@ -8,13 +8,12 @@ A responsive and interactive personal finance tracking web application. Built to
 
 ### ✨ Key Features
 
-**Financial Dashboard:** Instantly view your total income, total expenses, and current balance in a visually distinct layout.
-**Transaction Management:** Seamlessly add, edit, or delete transactions (both incomes and expenses).
-**Custom Categories:** Create and assign custom categories to your transactions for better organization].
-**Dynamic Filtering & Sorting:** Filter your transaction history by specific categories. Sort your data by Date, Description, or Amount with a single click.
-**Interactive UI:** Real-time DOM updates and smooth Bootstrap-powered modal windows for data entry.
-**Instant Feedback:** Built-in toast notifications inform you immediately about successful actions or errors.
-
+* **Financial Dashboard:** Instantly view your total income, total expenses, and current balance in a visually distinct layout.
+* **Transaction Management:** Seamlessly add, edit, or delete transactions (both incomes and expenses).
+* **Custom Categories:** Create and assign custom categories to your transactions for better organization.
+* **Dynamic Filtering & Sorting:** Filter your transaction history by specific categories. Sort your data by Date, Description, or Amount with a single click.
+* **Interactive UI:** Real-time DOM updates and smooth Bootstrap-powered modal windows for data entry.
+* **Instant Feedback:** Built-in toast notifications inform you immediately about successful actions or errors.
 ## 🛠️ Built With
 
 This project leverages the modern .NET ecosystem and standard web technologies:
