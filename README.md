@@ -32,7 +32,16 @@ To get a local copy up and running, follow these simple steps.
 * [.NET 8.0 SDK](https://dotnet.microsoft.com/download) (or corresponding version used in the project)
 * Visual Studio / VS Code or any compatible IDE
 
-<img width="1915" height="907" alt="image" src="https://github.com/user-attachments/assets/cf265243-e041-4d39-b2e1-dcacd34de9df" />
+📸 Screenshots
+Here is a visual breakdown of the application’s core features.
 
-<img width="541" height="668" alt="image" src="https://github.com/user-attachments/assets/1d023b19-8259-47f2-b5ba-d9f15d3a91b2" />
+🖥️ Dashboard Overview
+<p align="center">
+<img src="https://github.com/user-attachments/assets/cf265243-e041-4d39-b2e1-dcacd34de9df" alt="Dashboard Overview" width="100%">
+</p>
+
+➕ Add Transaction Modal
+<p align="center">
+<img src="https://github.com/user-attachments/assets/1d023b19-8259-47f2-b5ba-d9f15d3a91b2" alt="Add Transaction Modal" width="60%">
+</p>
 
